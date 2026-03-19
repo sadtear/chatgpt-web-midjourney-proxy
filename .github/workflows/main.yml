@@ -35,7 +35,7 @@ jobs:
           test_mode: false
 
       - name: Sync check
-        if: 失败()
+        if: failure()
         run: |
           echo "[Error] 同步失败，请检查上游分支名称是否正确，或是否存在合并冲突。"
           exit 1
