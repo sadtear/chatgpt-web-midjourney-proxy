@@ -14,12 +14,12 @@ const exSuno= ref<SunoMedia>()
 const des= ref( {
   "gpt_description_prompt": "",
   "make_instrumental": false,
-  "mv": "chirp-v4",
+  "mv": "chirp-crow",
   "prompt": ""
 });
 const cs= ref({
   "prompt": "",
-  "mv": "chirp-v4",
+  "mv": "chirp-crow",
   "title": "",
   "tags": "",
   "continue_at": 120,
@@ -32,6 +32,10 @@ const mvOption= [
 {label: 'verion: v3.5',value: 'chirp-v3-5'}
 ,{label:'verion: v3',value: 'chirp-v3-0'}
 ,{label:'verion: v4',value: 'chirp-v4'}
+,{label:'verion: v4.5-all',value: 'chirp-auk-turbo'}
+,{label:'verion: v4.5',value: 'chirp-auk'}
+,{label:'verion: v4.5+',value: 'chirp-bluejay'}
+,{label:'verion: v5',value: 'chirp-crow'}
  ]
 
 const canPost = computed(() => {
@@ -97,6 +101,7 @@ const generate= async ()=>{
            if( exSuno.value?.metadata?.type=='upload') cs.value.task='upload_extend'
            else cs.value.task='extend'
         }
+       
         let r:any= await sunoFetch(  '/generate' ,  cs.value ) 
         st.value.isLoading =false;
 
@@ -104,7 +109,8 @@ const generate= async ()=>{
        mlog('ids ', ids );
        if( cs.value.mv='chirp-v3-5-upload' ) cs.value.mv='chirp-v4'
     }else{
-        des.value.prompt=cs.value.title;
+        des.value.prompt='';//cs.value.title;
+        // cs.value.prompt=''
         let r:any= await sunoFetch(  '/generate/description-mode' ,  des.value )  
         st.value.isLoading =false; 
         ids=r.clips.map((r:any)=>r.id);

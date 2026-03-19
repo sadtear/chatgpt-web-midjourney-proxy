@@ -72,16 +72,18 @@ const text = computed(() => {
     value= value.replaceAll('\\]',"$$$$")   
 
     //思考过程处理
-    value= value.replace(/<think>([\s\S]*?)<\/think>/g, (match: string, content: string) => { 
+    //value= value.replace(/<think>([\s\S]*?)<\/think>/g, (match: string, content: string) => { 
+    value= value.replace(/<think>([\s\S]*?)(?=<\/think>|$)/g, (match: string, content: string) => { 
       const processedContent: string = content
         .split('\n')
         .map(line => line.trim() ? '>' + line : line)  
         .join('\n').replace(/(\r?\n)+/g, '\n>\n');
        
-      return ">Thinking..."+processedContent ;
+      return ">Thinking..."+(processedContent) ;
     });
+    value= value.replaceAll('</think>','')
     //mlog('replace', value)
-    return mdi.render(value)
+    return mdi.render(value) 
   }
   return value
 })
@@ -129,6 +131,19 @@ onUpdated(() => {
 onUnmounted(() => {
   removeCopyEvents()
 })
+
+const isDall=(chat: Chat.Chat)=>{
+ if(   chat.model=='midjourney'){
+        return false
+  }
+  if( isDallImageModel( chat.model ) ){
+    return true
+  }
+  if(chat.opt?.imageUrl){
+    return true
+  }
+  return false
+}
 </script>
 
 <template>
@@ -138,7 +153,7 @@ onUnmounted(() => {
         <aiTextSetting v-if="!inversion && isApikeyError(text)"/>
         <aiSetAuth v-if="!inversion && isAuthSessionError(text)" />
           
-        <dallText :chat="chat" v-if=" chat.model && chat.model?.indexOf('chat') == -1 && isDallImageModel( chat.model ) " class="whitespace-pre-wrap" />
+        <dallText :chat="chat" v-if=" chat.model && chat.model?.indexOf('chat') == -1 && isDall( chat ) " class="whitespace-pre-wrap" />
         <mjText v-if="chat.mjID" class="whitespace-pre-wrap" :chat="chat" :mdi="mdi"></mjText>
         <ttsText v-else-if="chat.model && isTTS(chat.model) && chat.text=='ok'" :chat="chat"/>
         <template v-else>

@@ -1,6 +1,102 @@
 # 功能升级日志
 
 #  计划 
+# 2.25.11
+- feat: 添加 WebDAV 聊天记录同步功能 #665
+
+# 2.25.10
+- 😄 新增画图：nano-banana-2 gpt-image-1.5 gemini-3.1-flash-image-preivew
+- 😄 新增对话：`gpt-5.1`、`gemini-3-pro-preview`,`grok-4.1`
+- 2026第一个版本
+
+# 2.25.9
+- 🐞 修复：mj显示双图
+- 🐞 修复：gpt-5-all gpts 读取不了pdf的问题
+- 🐞 修复：nona-banana 请求返回正确，但是页面不显示，原因是确实一个判断逻辑。下面代码即可解决bug #667
+- 🐞 修复：MP4格式自动调用whisper-1模型可以去除吗？ #666
+
+# 2.25.8
+- 😄 新增视频：veo3.1 veo3.1-pro openai/sora-2 openai/sora-2-pro
+- 😄 修改：sora-2参数
+
+# 2.25.7
+- 😄 新增视频：sora-2-pro
+- 😄 修改：修改 sora-2参数
+# 2.25.6
+- 😄 新增视频：sora-2
+# 2.25.5
+- 😄 新增：suno-v5
+
+# 2.25.4
+- 😄 新增：nano-banana支持 比例
+- 😄 新增：google veo类视频、fal-ai视频类
+- 😄 新增：支持直达视频模型 https://vercel.ddaiai.com/#/video/index?tab=all&model=veo3
+# 2.25.3
+- 😄 新增：dalle格式的 谷歌 nano-banana
+
+# 2.25.2
+- 🐞 修复：gpt-image-1 无法同时传多个图片 #634
+- 🐞 修复：【bug】绘画 gpt-image-1 采用服务端配置生成图片报错 #646
+- 🐞 修复： gpt5报错 #650
+- 😄 新增：支持 mj 视频组合 `--video` `--bs 2`  生成视频  
+
+# 2.25.1
+- 😄 新增：支持 suno 模型 `v4.5+` , 将 mv 修改为`chirp-bluejay`
+# 2.24.10
+- 😄 新增：支持 `reasoning_content`
+
+# 2.24.9
+- 😄 新增：mj `图生视频` `图片编辑`
+
+# 2.24.8
+- 😄 新增：`flux-kontext-pro` `flux-kontext-max` 模型
+
+# 2.24.7
+- 😄 新增：riffusion 音乐模块
+- 😄 改进：mj 按钮如果没有预先设置 则直接显示
+
+# 2.24.6
+- 😄 新增：mj v6.1 v7的放大   关于MJ V6.1 和 V7 没有放大按钮 #635
+- 😄 新增：kling-v2-master 模型
+# 2.24.5
+- 😄 新增：pix 运镜
+
+# 2.24.4
+- 🐞 修复：oref 空 导致 trim错误
+
+# 2.24.3
+- 🐞 改进：mj 默认为 v7
+- 🐞 改进：mj 支持 oref 全面参考 
+
+# 2.24.2
+- 😄 新增： suno `v4.5`  model 为 `chirp-auk`
+# 2.24.1
+- 😄 新增：gpt-image-1 dall.e-2 支持 v1/image/edit 支持多图
+- 🐞 改进：默认上传改为5M
+
+# 2.23.10
+
+- 😄 新增：gpt-image-1 这个是dall-e格式
+- 😄 新增：pixverse 的 `v4`版本
+
+# 2.23.9
+- 😄 新增：rumwayml 支持 gen4_turbo
+
+# 2.23.8
+- 🐞 改进：识图默认放开都支持 只有gpt-3.5 已知不支持
+- 🐞 改进：服务端模型 支持搜索
+
+# 2.23.7
+- 😄 新增：模型 mj 7.0
+
+# 2.23.6
+- 🐞 修复：2.23.4依旧出现ds-R1不展示思考过程的问题 #611
+- 😄 新增：模型 从服务端的 /v1/models 拉起
+
+
+# 2.23.5
+- 😄 新增：`grok-3`,`grok-3-reasoner`,`grok-3-deepsearch` 模型
+- 😄 新增：`gpt-4.5-preview-2025-02-27`,`gpt-4.5-preview` 模型
 
 # 2.23.4
 - 🐞 修复：`deepseek-v3` `deepseek-r1` 识图处理，需要中转支持

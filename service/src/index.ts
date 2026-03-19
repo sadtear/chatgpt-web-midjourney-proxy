@@ -17,7 +17,7 @@ import FormData  from 'form-data'
 import axios from 'axios';
 import AWS  from 'aws-sdk';
 import { v4 as uuidv4} from 'uuid';
-import { viggleProxyFileDo,viggleProxy, lumaProxy, runwayProxy, ideoProxy, ideoProxyFileDo, klingProxy, pikaProxy, udioProxy, runwaymlProxy, pixverseProxy, sunoProxy } from './myfun'
+import { viggleProxyFileDo,viggleProxy, lumaProxy, runwayProxy, ideoProxy, ideoProxyFileDo, klingProxy, pikaProxy, udioProxy, runwaymlProxy, pixverseProxy, sunoProxy, GptImageEdit } from './myfun'
 
 
 const app = express()
@@ -92,7 +92,7 @@ router.post('/session', async (req, res) => {
     const disableGpt4 = process.env.DISABLE_GPT4?? "" ;
     const isUploadR2 = isNotEmptyString(process.env.R2_DOMAIN);
     const isWsrv =  process.env.MJ_IMG_WSRV?? "" 
-    const uploadImgSize =  process.env.UPLOAD_IMG_SIZE?? "1" 
+    const uploadImgSize =  process.env.UPLOAD_IMG_SIZE?? "5" 
     const gptUrl = process.env.GPT_URL?? ""; 
     const theme = process.env.SYS_THEME?? "dark"; 
     const isCloseMdPreview = process.env.CLOSE_MD_PREVIEW?true:false
@@ -300,7 +300,8 @@ app.use(
   }
 );
 
- 
+//代理图片编辑
+app.use('/openapi/v1/images/edits',authV2,upload2.any() , GptImageEdit )
 
 //代理openai 接口
 app.use('/openapi' ,authV2, turnstileCheck, proxy(API_BASE_URL, {
@@ -345,7 +346,50 @@ app.use('/udio' ,authV2, udioProxy  );
 
 app.use('/pixverse' ,authV2, pixverseProxy  );
 
-
+// WebDAV 代理接口
+router.post('/webdav-proxy', authV2, async (req, res) => {
+  try {
+    const { url, method, username, password, data } = req.body
+    
+    if (!url || !method || !username || !password) {
+      return res.status(400).json({ error: '缺少必要参数' })
+    }
+    
+    const auth = Buffer.from(`${username}:${password}`).toString('base64')
+    const headers: any = {
+      'Authorization': `Basic ${auth}`,
+    }
+    
+    if (method === 'PUT') {
+      headers['Content-Type'] = 'application/json'
+    }
+    
+    const axiosConfig: any = {
+      method,
+      url,
+      headers,
+      timeout: 30000,
+    }
+    
+    if (method === 'PUT' && data) {
+      axiosConfig.data = data
+    }
+    
+    const response = await axios(axiosConfig)
+    res.json({ 
+      success: true, 
+      status: response.status,
+      data: response.data 
+    })
+  }
+  catch (error: any) {
+    res.status(error.response?.status || 500).json({ 
+      success: false,
+      error: error.message,
+      status: error.response?.status
+    })
+  }
+})
 
 
 

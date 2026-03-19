@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import {NSelect, NInput,NSlider, NButton, useMessage,NTag} from "naive-ui"
-import { ref ,computed,watch, onMounted} from "vue";
+import {NSelect, NInput,NSlider, NButton, useMessage,NTag,NPopselect ,NAvatar, NText} from "naive-ui"
+import type { SelectRenderLabel, SelectRenderTag } from 'naive-ui'
+import { ref ,computed,watch, onMounted,h} from "vue";
 import {gptConfigStore, homeStore,useChatStore} from '@/store'
 import { mlog,chatSetting } from "@/api";
 import { t } from "@/locales";
+
+import AiModelServer from "./aiModelServer.vue";
+ 
 
 const emit = defineEmits(['close']);
 const chatStore = useChatStore();
@@ -14,16 +18,19 @@ const chatSet = new chatSetting( uuid==null?1002:uuid);
 const nGptStore = ref(  chatSet.getGptConfig() );
 
 const config = ref({
-model:[ 'o1','o1-2024-12-17', 'gpt-4-turbo-2024-04-09','o1-preview','o1-mini','o1-preview-2024-09-12','o1-mini-2024-09-12','chatgpt-4o-latest','gpt-4o-2024-11-20','gpt-4o-2024-08-06','gpt-4o-2024-05-13','gpt-4o-mini-2024-07-18','gpt-4o-mini','gpt-4o','gpt-4-turbo','gpt-4-0125-preview','gpt-3.5-turbo',`gpt-4-1106-preview`,`gpt-3.5-turbo-16k`,'gpt-4','gpt-4-0613','gpt-4-32k-0613' ,'gpt-4-32k','gpt-4-32k-0314',`gpt-3.5-turbo-16k-0613`
+model:[ 'gpt-5.1','gemini-3-pro-preview','grok-4.1','gpt-5','gpt-5-mini','gpt-5-nano','o1','o1-2024-12-17', 'gpt-4-turbo-2024-04-09','o1-preview','o1-mini','o1-preview-2024-09-12','o1-mini-2024-09-12','chatgpt-4o-latest','gpt-4o-2024-11-20','gpt-4o-2024-08-06','gpt-4o-2024-05-13','gpt-4o-mini-2024-07-18','gpt-4o-mini','gpt-4o','gpt-4-turbo','gpt-4-0125-preview','gpt-3.5-turbo',`gpt-4-1106-preview`,`gpt-3.5-turbo-16k`,'gpt-4','gpt-4-0613','gpt-4-32k-0613' ,'gpt-4-32k','gpt-4-32k-0314',`gpt-3.5-turbo-16k-0613`
 ,`gpt-4-vision-preview`,`gpt-3.5-turbo-1106` ,'gpt-3.5-turbo-0125'
 ,'gpt-3.5-turbo-0301','gpt-3.5-turbo-0613','gpt-4-all','gpt-3.5-net'
 ,'gemini-pro',"gemini-pro-vision",'gemini-pro-1.5',"gemini-1.5-pro-exp-0801"
+,'claude-3-7-sonnet-20250219'
 ,'claude-3-5-sonnet-20241022','claude-3-sonnet-20240229','claude-3-opus-20240229','claude-3-haiku-20240307','claude-3-5-sonnet-20240620','suno-v3'
 ,'deepseek-r1','deepseek-v3'
+,'grok-3','grok-3-reasoner','grok-3-deepsearch'
+,'gpt-4.5-preview-2025-02-27','gpt-4.5-preview'
 ]
-,maxToken:4096
+,maxToken:16384
 }); 
-const st= ref({openMore:false });
+const st= ref({openMore:false,isShow:false ,server:'' });
 const voiceList= computed(()=>{
     let rz=[];
     for(let o of "alloy,echo,fable,onyx,nova,shimmer".split(/[ ,]+/ig))rz.push({label:o,value:o}) 
@@ -87,18 +94,20 @@ const saveChat=(type:string)=>{
  
 watch(()=>nGptStore.value.model,(n)=>{
     nGptStore.value.gpts=undefined;
-    let max=4096*2*2;
-    if( n.indexOf('vision')>-1){
+    let max=16384 *2;
+    if( n.indexOf('gpt-3.5')>-1){
         max=4096*2;
     }else if(  n.indexOf('o1-mini')>-1){  
         max=65536 *2;
     }else if(  n.indexOf('o1-')>-1 || n=='o1' ){  
         max=65536 ;
-    }else if( n=='gpt-4o-2024-08-06' || n=='chatgpt-4o-latest' || n.indexOf('gpt-4o')>-1 ){  
+    }else if( n=='gpt-4o-2024-08-06' || n=='chatgpt-4o-latest' || n.indexOf('gpt-4o')>-1 || n.indexOf('gpt-4.5')>-1){  
         max=16384 *2;
     }else if( n.indexOf('gpt-4')>-1 ||  n.indexOf('16k')>-1 ||  n.indexOf('o1-')>-1 ){ //['16k','8k','32k','gpt-4'].indexOf(n)>-1
         max=4096*2;
-    }else if( n.toLowerCase().includes('claude-3-5') ||  n.toLowerCase().includes('deepseek') ){ //deepseek
+    }else if( n.toLowerCase().includes('claude-3-5')|| n.toLowerCase().includes('sonnet') 
+        ||n.toLowerCase().includes('grok-3')
+     ||  n.toLowerCase().includes('deepseek') ){ //deepseek
         max=4096*2*2;
     }else if( n.toLowerCase().includes('claude-3') ){
          max=4096*2;
@@ -117,17 +126,46 @@ onMounted(() => {
     //gptConfigStore.myData= chatSet.getGptConfig();
 });
 
-//数组去重
-
-
-
+const serverSuccess=(s:any)=>{
+    mlog('serverSuccess ', s  )
+    nGptStore.value.model= s.model
+}
 //
 //const f= ref({model:gptConfigStore.myData.model});
 </script>
 <template>
 <section class="mb-4 flex justify-between items-center"  >
-     <div ><span class="text-red-500">*</span>  {{ $t('mjset.model') }}</div>
-    <n-select v-model:value="nGptStore.model" :options="modellist" size="small"  filterable  class="!w-[50%]"   />
+    <div class=" flex space-x-2 justify-between items-center">
+     <div class="flex justify-start items-center">
+        <span class="text-red-500">*</span>  
+        {{ $t('mjset.model') }}
+        
+     </div>
+     
+    </div>
+    <div  class="!w-[70%] flex justify-end items-center " >
+       <div> 
+        <n-select v-model:value="nGptStore.model" :options="modellist" size="small"  filterable   />
+       </div>
+       <div class=" pl-2" > 
+        <!-- <NButton type="primary" @click="saveChat('no')" size="small" >{{ $t('mj.server_load') }}</NButton> -->
+        <AiModelServer @success="serverSuccess"/>
+        <!-- <n-popselect
+                v-model:value="st.server"
+                :options="serverOptions"
+                :render-label="renderLabel"
+                size="medium"
+                scrollable
+            >
+            <NTag  type="primary" round size="small" :bordered="false" class="!cursor-pointer">
+            {{ $t('mj.server_load') }}
+            
+            </NTag>
+        </n-popselect> -->
+            
+
+       </div>
+    </div>
 </section>
 <section class="mb-4 flex justify-between items-center"  >
     <n-input   :placeholder="$t('mjchat.modlePlaceholder')" v-model:value="gptConfigStore.myData.userModel">
@@ -220,4 +258,8 @@ onMounted(() => {
     <NButton type="primary" @click="save">{{ $t('mj.setBtSaveSys') }}</NButton> -->
     <NButton type="primary" @click="saveChat('no')">{{ $t('common.save') }}</NButton>
  </section>
+
+ <!-- <NModal  v-model:show="st.isShow"  preset="card"  :title="$t('mjchat.modelChange')" class="!max-w-[820px]" @close="st.isShow=false" >
+    Model内容
+ </NModal> -->
 </template>

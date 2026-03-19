@@ -18,7 +18,7 @@ export interface gptsType{
  //const { addChat, updateChat, updateChatSome, getChatByUuidAndIndex } = useChat()
 export function upImg(file:any   ):Promise<any>
 {
-    const maxSize= homeStore.myData.session.uploadImgSize? (+homeStore.myData.session.uploadImgSize):1
+    const maxSize= homeStore.myData.session.uploadImgSize? (+homeStore.myData.session.uploadImgSize):5
     return new Promise((h,r)=>{
         const filename = file.name;
         if(file.size>(1024*1024 * maxSize)){
@@ -73,7 +73,9 @@ export const blob2file= ( blob:Blob,fileName:string )=>{
 }
 
 export const  isFileMp3= (filename:string )=>{
-    let arr='.mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm'.split(/[, ]+/ig);
+    //let arr='.mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm'.split(/[, ]+/ig);
+    // 修复： https://github.com/Dooy/chatgpt-web-midjourney-proxy/issues/666
+    let arr='.mp3, .mpeg, .mpga, .m4a, .wav, .webm'.split(/[, ]+/ig);
     mlog('fileIsMp3', arr );
     filename= filename.toLocaleLowerCase();
     for(let ext of arr ){
@@ -273,8 +275,12 @@ export const subTask= async (data:any, chat:Chat.Chat )=>{
         d=  await mjFetch('/mj/insight-face/swap' , data.data  ); 
         //mlog('换年服务', data.data );
         //return; 
+    }else if( data.action && data.action=='mj.edit.image') { //图编辑
+       d=  await mjFetch('/mj/submit/edits' , data.data  ); 
+    }else if( data.action &&data.action=='mj.edit.video') { //图生视频
+        d=  await mjFetch('/mj/submit/video' , data.data  ); 
     }else if( data.action &&data.action=='img2txt') { //图生文 
-            d=  await mjFetch('/mj/submit/describe' , data.data  ); 
+        d=  await mjFetch('/mj/submit/describe' , data.data  ); 
     }else if( data.action &&data.action=='changeV2') { //执行动作！
         d=  await mjFetch('/mj/submit/action' , data.data  );
         if  (d.description&&  d.description.indexOf('confirm')>-1){
@@ -384,6 +390,12 @@ export const canVisionModel= (model:string)=>{
     return false;
 }
 export const isCanBase64Model=(model:string)=>{
+
+    //默认是支持
+    if( model.includes('gpt-3') || model=='gpt-4'){
+        return false
+    }
+    return true
     //gpt-4o
     //customVisionModel
     let arr=['gpt-4o','gemini','1.5','sonnet','opus','deepseek' ];

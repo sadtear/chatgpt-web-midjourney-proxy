@@ -68,6 +68,18 @@ export default {
     chatHistory: '紀錄',
     theme: '主題',
     language: '語言',
+    webdavSync: 'WebDAV 同步',
+    webdavConfig: '配置',
+    webdavUrl: 'WebDAV 地址',
+    webdavUsername: '使用者名稱',
+    webdavPassword: '密碼',
+    webdavConfigError: '請填寫完整的 WebDAV 配置',
+    webdavNotConfigured: '請先配置 WebDAV',
+    webdavSyncSuccess: '同步成功',
+    webdavSyncError: '同步失敗',
+    webdavTest: '測試連接',
+    webdavUpload: '上傳',
+    webdavDownload: '下載',
     api: 'API',
     reverseProxy: '反向代理',
     timeout: '逾時',
@@ -256,7 +268,16 @@ export default {
     "pixabout": "與 Pixverse 相關",
     "pixkeyPlaceholder": "Pixverse 的 API 金鑰可不填",
     "pixserver": "Pixverse 接口地址",
-    "pixinfo": " 說明：<br> <ul> <li>1.以 v3.5 360p 時長 5s 模式 Normal 為基數</li><li>2.v2.5 是 0.5 倍</li> <li>3.時長 10s 是 2 倍</li> <li>4.540P 1.5 倍，720P 2 倍，1080P 4 倍</li> <li>5.模式 performance 2 倍</li> <li>6.倍數是相乘的，比如 720P 時長 10s 那就是 2*2 是 4 倍，如果再加 performance 就是 8 倍</li></ul>"
+    "pixinfo": " 說明：<br> <ul> <li>1.以 v3.5 360p 時長 5s 模式 Normal 為基數</li><li>2.v2.5 是 0.5 倍</li> <li>3.時長 10s 是 2 倍</li> <li>4.540P 1.5 倍，720P 2 倍，1080P 4 倍</li> <li>5.模式 performance 2 倍</li> <li>6.倍數是相乘的，比如 720P 時長 10s 那就是 2*2 是 4 倍，如果再加 performance 就是 8 倍</li></ul>",
+
+    "riffabout": "關於 Riffusion",
+    "riffkeyPlaceholder": "Riffusion API 金鑰（可選）",
+    "riffserver": "Riffusion 接口地址",
+    "riffinfo": "說明",
+
+    "editImage": "圖片編輯",
+    "editVideo": "圖生視頻",
+    "moreset": "更多參數",
     
   },
   "mjset": {

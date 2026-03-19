@@ -118,6 +118,8 @@ export interface gptServerType{
     UDIO_KEY:string
     PIXVERSE_SERVER:string
     PIXVERSE_KEY:string
+    RIFF_SERVER:string
+    RIFF_KEY:string
     IS_SET_SYNC?:boolean
     GPTS_GX?:boolean
     IS_LUMA_PRO?:boolean
@@ -148,7 +150,7 @@ let v:gptServerType={
         LUMA_KEY:'',
         VIGGLE_SERVER:'',
         VIGGLE_KEY:'',
-        TAB_VIDEO:'luma',
+        TAB_VIDEO:'all',
         RUNWAY_SERVER:'',
         RUNWAY_KEY:'',
         IDEO_SERVER:'',

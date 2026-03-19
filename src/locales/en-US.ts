@@ -67,6 +67,18 @@ export default {
     chatHistory: 'ChatHistory',
     theme: 'Theme',
     language: 'Language',
+    webdavSync: 'WebDAV Sync',
+    webdavConfig: 'Configuration',
+    webdavUrl: 'WebDAV URL',
+    webdavUsername: 'Username',
+    webdavPassword: 'Password',
+    webdavConfigError: 'Please fill in the complete WebDAV configuration',
+    webdavNotConfigured: 'Please configure WebDAV first',
+    webdavSyncSuccess: 'Sync successful',
+    webdavSyncError: 'Sync failed',
+    webdavTest: 'Test Connection',
+    webdavUpload: 'Upload',
+    webdavDownload: 'Download',
     api: 'API',
     reverseProxy: 'Reverse Proxy',
     timeout: 'Timeout',
@@ -263,7 +275,17 @@ export default {
   "pixkeyPlaceholder": "Pixverse API Key can be left blank",
   "pixserver": "Pixverse API address",
   "pixinfo": " Description:<br> <ul> <li>1. Based on v3.5 360p duration 5s mode Normal</li><li>2. v2.5 is 0.5 times</li> <li>3. Duration 10s is 2 times</li> <li>4. 540P is 1.5 times, 720P is 2 times, 1080P is 4 times</li> <li>5. Mode performance is 2 times</li> <li>6. The multiples are multiplied, for example, 720P duration 10s is 2*2 which is 4 times, and if performance is added, it becomes 8 times</li></ul>"
+   ,server_load:'Server Pull'
+   ,model_select:'Model Selecte'
 
+   ,riffabout:'About Riffusion'
+   ,riffkeyPlaceholder:'Riffusion API Key can be left blank'
+   ,riffserver:'Riffusion API address'
+   ,riffinfo:'Riffusion Description'
+
+   ,editImage:'Image Edit'
+   ,editVideo:'Image2Video'
+   ,moreset:'More Parameters'
   },
   "mjset": {
     "server": "Server",

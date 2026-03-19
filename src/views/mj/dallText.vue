@@ -11,9 +11,12 @@ const chat = computed(() =>props.chat);
 
 const load = async ()=>{
      mlog('load-dall', chat.value.myid, chat.value.opt?.imageUrl );
-     //if(chat.value.model!='dall-e-3' || !chat.value.myid || !chat.value.opt?.imageUrl ){
+    
      if( !isDallImageModel(chat.value.model)  || !chat.value.myid || !chat.value.opt?.imageUrl ){
          st.value.isLoadImg=true;
+         if( chat.value.model=='midjourney'){
+           st.value.isLoadImg=false;
+         }
       return ;
      }
      let key= 'dall:'+chat.value.myid;

@@ -1,7 +1,7 @@
 <script setup lang="ts"> 
 import { ref,computed,watch,onMounted } from "vue"; 
 import config from "./draw.json";
-import {  NSelect,NInput,NButton,NTag,NPopover, useMessage,NInputNumber} from 'naive-ui';
+import {  NSelect,NInput,NButton,NTag,NPopover, useMessage,NInputNumber,NCollapse,NCollapseItem,NDivider,NModal} from 'naive-ui';
 import {  SvgIcon } from '@/components/common'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 const { isMobile } = useBasicLayout()
@@ -13,6 +13,9 @@ import { homeStore ,useChatStore} from "@/store";
 const chatStore = useChatStore()
 import {t} from "@/locales"
 //import { upImg } from "./mj";
+import AiEditVidoe from './aiEditVidoe.vue'
+import AiEditImage from './aiEditImage.vue'
+import { key } from "localforage";
 
 const vf=[{s:'width: 100%; height: 100%;',label:'1:1'}
 ,{s:'width: 100%; height: 75%;',label:'4:3'}
@@ -21,7 +24,14 @@ const vf=[{s:'width: 100%; height: 100%;',label:'1:1'}
 ,{s:'width: 50%; height: 100%;',label:'9:16'}
  ];
 
-const f=ref({bili:-1, quality:'',view:'',light:'',shot:'',style:'', styles:'',version:'--v 6.1',sref:'',cref:'',cw:'',});
+const bsOption=[
+    {value:0,key:0,label:'未使用'}
+    ,{value:4,key:4,label:'4个'}
+    ,{value:2,key:2,label:'2个 单价1/2'}
+    ,{value:1,key:1,label:'1个 单价1/4'}
+];
+const f=ref({bili:-1, quality:'',view:'',light:'',shot:'',style:'', styles:'',version:'--v 7.0'
+,sref:'',cref:'',cw:'',oref:'',vidoeImage:'',videoBs:0 });
 const st =ref({text:'',isDisabled:false,isLoad:false
     ,fileBase64:[],bot:'',showFace:false,upType:''
 });
@@ -109,6 +119,7 @@ function createPrompt(rz:string){
         msgRef.value.showError(t('mjchat.placeInput') );
         return '';
     }
+    const oloadRz=rz
 
 
     // for(let v of farr){
@@ -145,9 +156,18 @@ function createPrompt(rz:string){
     mlog('createPrompt ', rz,  f.value  );
     if( f.value.sref.trim() != '' ) rzp += ` --sref ${f.value.sref}`
     if( f.value.cref.trim() != '' ) rzp += ` --cref ${f.value.cref}`
+    if(  f.value.oref &&  f.value.oref.trim() != '' ) rzp += ` --oref ${f.value.oref}`
     if( f.value.cw && f.value.cw!='' ) rzp += ` --cw ${f.value.cw}`
     if (f.value.bili > -1) rzp += ` --ar ${vf[f.value.bili].label}` 
+    if(f.value.videoBs>0){
+        if (f.value.vidoeImage) rzk += ` ${f.value.vidoeImage} `
+        rz = ` ${oloadRz} --bs ${f.value.videoBs} `
+        rzp=` --video `
+       
+    }
     rz = rzk + rz +rzp;
+
+    // mlog('createPrompt over ', rz  );
     return rz ;
 }
 
@@ -264,16 +284,30 @@ const clearAll=()=>{
   f.value.cref='';
   f.value.cw='';
   f.value.sref='';
+  f.value.oref='';
+  f.value.vidoeImage='';
+  f.value.videoBs=0;
 }
 
 const uploader=(type:string)=>{
     st.value.upType= type;
     fsRef3.value.click();
 }
+
+const mst= ref({isShow:false,type:'',base64:''});
 const selectFile3=  (input:any)=>{
-    ms.loading('上传中...');
+    
+    const isEdit= 'editVideo'== st.value.upType ||'editImage'== st.value.upType
+    !isEdit &&  ms.loading('上传中...') 
     upImg(input.target.files[0]).then( async(d)=>{
-        mlog('selectFile3>> ',d );
+        //mlog('selectFile3>> ',d );
+        if( isEdit){
+            mst.value.isShow=true;
+            mst.value.type=st.value.upType;
+            mst.value.base64=d;
+            fsRef3.value.value='';
+            return 
+        }
         let data={
             action:'img2txt',
             data:{
@@ -289,6 +323,10 @@ const selectFile3=  (input:any)=>{
             if(d.code== 1){
                 if( st.value.upType=='cref'){
                     f.value.cref= d.result[0];
+                }else if(st.value.upType=='vidoeImage' ){
+                   f.value.vidoeImage= d.result[0];
+                }else if(st.value.upType=='oref' ){
+                    f.value.oref= d.result[0];
                 }else{
                     f.value.sref= d.result[0];
                 }
@@ -334,11 +372,14 @@ const selectFile3=  (input:any)=>{
 
         </div>
     </section>
-    <section class="mb-4 flex justify-between items-center" v-for=" v in farr">
-        <div>{{ v.v }}</div>
-        <n-select v-model:value="f[v.k]" :options="drawlocalized[v.k+'List']" size="small"  class="!w-[60%]" :clearable="true" />
-	</section>
-    <!-- <template  >  </template> -->
+    <n-collapse class="mb-4">
+      <n-collapse-item :title="$t('mj.moreset')" name="1">
+     
+        <section class="mb-4 flex justify-between items-center" v-for=" v in farr">
+            <div>{{ v.v }}</div>
+            <n-select v-model:value="f[v.k]" :options="drawlocalized[v.k+'List']" size="small"  class="!w-[60%]" :clearable="true" />
+        </section>
+     
         <section class="mb-4 flex justify-between items-center"  >
         <div  >cw(0-100)</div>
         <NInputNumber :min="0" :max="100" v-model:value="f.cw" class="!w-[60%]" size="small" clearable placeholder="0-100 角色参考程度" />
@@ -352,6 +393,7 @@ const selectFile3=  (input:any)=>{
                 </template>
             </NInput>
         </section>
+
         <section class="mb-4 flex justify-between items-center"  >
         <div class="w-[45px]">cref</div>
             <NInput  v-model:value="f.cref" size="small" placeholder="图片url 生成角色一致的图像" clearable>
@@ -360,6 +402,33 @@ const selectFile3=  (input:any)=>{
                 </template>
             </NInput>
         </section>
+
+
+        <section class="mb-4 flex justify-between items-center"  >
+        <div class="w-[45px]">oref</div>
+            <NInput  v-model:value="f.oref" size="small" placeholder="图片url 全向参考的图像" clearable>
+                <template #suffix>
+                    <SvgIcon icon="ri:upload-line" class="cursor-pointer"  @click="uploader('oref')"></SvgIcon>
+                </template>
+            </NInput>
+        </section>
+
+        <section class="mb-4 flex justify-between items-center"  >
+          <div >视频</div>
+          <n-select v-model:value="f.videoBs" :options="bsOption" size="small"  class="!w-[60%]" :clearable="true" />
+        </section>
+        <section class="mb-4 flex justify-between items-center" v-if="f.videoBs>0" >
+        <div class="w-[45px]">Video</div>
+            <NInput  v-model:value="f.vidoeImage" size="small" placeholder="视频参考 url" clearable>
+                <template #suffix>
+                    <SvgIcon icon="ri:upload-line" class="cursor-pointer"  @click="uploader('vidoeImage')"></SvgIcon>
+                </template>
+            </NInput>
+        </section>
+
+            
+      </n-collapse-item>
+    </n-collapse>
    
     
     <div class="mb-1">
@@ -457,12 +526,25 @@ const selectFile3=  (input:any)=>{
         <div @click="copy2()"  >复制2</div>
     </div> -->
 
+  <n-divider dashed title-placement="right">Other</n-divider>
+  <div class="flex justify-start items-center space-x-2">
+        <n-tag type="primary" round size="small" style="cursor: pointer; " :bordered="false" @click="uploader('editVideo')"   >
+            <div  class="flex">  <SvgIcon icon="ri:video-add-line" /> {{ $t('mj.editVideo') }} </div>
+        </n-tag>
+        <n-tag type="primary" round size="small" style="cursor: pointer; " :bordered="false" @click="uploader('editImage')"   >
+            <div  class="flex">  <SvgIcon icon="mdi:file-chart-check-outline" /> {{ $t('mj.editImage') }} </div>
+        </n-tag>
+  </div>
+
    <ul class="pt-4"  v-if="!isMobile" v-html="$t('mjchat.imginfo')"></ul>
 
 
 </div>
 
-
+<NModal v-model:show="mst.isShow"   preset="card"  :title=" mst.type=='editVideo'?$t('mj.editVideo'):$t('mj.editImage')" style="max-width: 800px;" @close="mst.isShow=false">
+        <AiEditVidoe :img="mst.base64" @success="mst.isShow=false"  v-if="mst.isShow && mst.type=='editVideo'"   />
+        <AiEditImage :img="mst.base64" @success="mst.isShow=false"  v-if="mst.isShow && mst.type=='editImage'"   />
+</NModal>
 
 </template>
 <style>

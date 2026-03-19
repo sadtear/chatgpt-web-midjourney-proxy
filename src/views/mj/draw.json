@@ -234,6 +234,10 @@
 	"versionList": [
 		
 		{
+			"labelKey": "MJ V7",
+			"value": "--v 7.0"
+		},
+		{
 			"labelKey": "draw.versionList.mjV61",
 			"value": "--v 6.1"
 		},
@@ -248,6 +252,10 @@
 		{
 			"labelKey": "draw.versionList.mjV51",
 			"value": "--v 5.1"
+		},
+		{
+			"labelKey": "Niji V7",
+			"value": "--niji 7"
 		},
 		{
 			"labelKey": "draw.versionList.nijiV6",

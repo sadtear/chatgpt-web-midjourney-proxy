@@ -66,6 +66,18 @@ export default {
     chatHistory: 'Lịch sử trò chuyện',
     theme: 'Giao diện',
     language: 'Ngôn ngữ',
+    webdavSync: 'Đồng bộ WebDAV',
+    webdavConfig: 'Cấu hình',
+    webdavUrl: 'Địa chỉ WebDAV',
+    webdavUsername: 'Tên người dùng',
+    webdavPassword: 'Mật khẩu',
+    webdavConfigError: 'Vui lòng điền đầy đủ cấu hình WebDAV',
+    webdavNotConfigured: 'Vui lòng cấu hình WebDAV trước',
+    webdavSyncSuccess: 'Đồng bộ thành công',
+    webdavSyncError: 'Đồng bộ thất bại',
+    webdavTest: 'Kiểm tra kết nối',
+    webdavUpload: 'Tải lên',
+    webdavDownload: 'Tải xuống',
     api: 'API',
     reverseProxy: 'Reverse Proxy',
     timeout: 'Timeout',
@@ -260,7 +272,16 @@ export default {
     "pixabout": "Liên quan đến Pixverse",
     "pixkeyPlaceholder": "Khóa API Pixverse có thể để trống",
     "pixserver": "Địa chỉ API Pixverse",
-    "pixinfo": " Mô tả:<br> <ul> <li>1. Dựa trên v3.5 360p thời gian 5s chế độ Normal</li><li>2. v2.5 là 0.5 lần</li> <li>3. Thời gian 10s là 2 lần</li> <li>4. 540P là 1.5 lần, 720P là 2 lần, 1080P là 4 lần</li> <li>5. Chế độ hiệu suất là 2 lần</li> <li>6. Các bội số được nhân với nhau, ví dụ 720P thời gian 10s là 2*2 tức là 4 lần, nếu thêm hiệu suất thì sẽ là 8 lần</li></ul>"
+    "pixinfo": " Mô tả:<br> <ul> <li>1. Dựa trên v3.5 360p thời gian 5s chế độ Normal</li><li>2. v2.5 là 0.5 lần</li> <li>3. Thời gian 10s là 2 lần</li> <li>4. 540P là 1.5 lần, 720P là 2 lần, 1080P là 4 lần</li> <li>5. Chế độ hiệu suất là 2 lần</li> <li>6. Các bội số được nhân với nhau, ví dụ 720P thời gian 10s là 2*2 tức là 4 lần, nếu thêm hiệu suất thì sẽ là 8 lần</li></ul>",
+
+    "riffabout": "Về Riffusion",
+    "riffkeyPlaceholder": "Khóa API Riffusion (không bắt buộc)",
+    "riffserver": "Địa chỉ API Riffusion",
+    "riffinfo": "Mô tả",
+
+    "editImage": "Chỉnh sửa hình ảnh",
+    "editVideo": "Hình ảnh thành video",
+    "moreset": "Thêm tham số",
 
   },
   "mjset": {
