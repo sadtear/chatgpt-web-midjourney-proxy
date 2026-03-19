@@ -1,0 +1,41 @@
+name: Upstream Sync
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # 每天运行
+  workflow_dispatch:
+
+jobs:
+  sync_latest_from_upstream:
+    name: Sync latest commits from upstream repo
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork }}
+
+    steps:
+      - name: Checkout target repo
+        uses: actions/checkout@v3
+
+      - name: Sync upstream changes
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          # 👇 必须修改：格式为 "上游用户名/上游仓库名"
+          upstream_sync_repo: Dooy/chatgpt-web-midjourney-proxy
+          
+          # 👇 检查上游仓库的主分支是 main 还是 master
+          upstream_sync_branch: main
+          
+          # 👇 你的复刻仓库的主分支名（通常与上游一致）
+          target_sync_branch: main
+          
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          test_mode: false
+
+      - name: Sync check
+        if: 失败()
+        run: |
+          echo "[Error] 同步失败，请检查上游分支名称是否正确，或是否存在合并冲突。"
+          exit 1
