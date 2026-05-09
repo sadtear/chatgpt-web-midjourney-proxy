@@ -585,6 +585,8 @@ export default {
     use:'使用',
   }
   ,'录音':'录音'
+  ,'禁用stream':'禁用stream'
+  ,'当禁用stream时,则使用非流式数据':'当禁用stream时,则使用非流式数据'
 
 
 }

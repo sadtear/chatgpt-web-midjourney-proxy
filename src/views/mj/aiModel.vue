@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NSelect, NInput,NSlider, NButton, useMessage,NTag,NPopselect ,NAvatar, NText} from "naive-ui"
+import {NSelect, NInput,NSlider, NButton, useMessage,NTag,NPopselect ,NAvatar, NSwitch} from "naive-ui"
 import type { SelectRenderLabel, SelectRenderTag } from 'naive-ui'
 import { ref ,computed,watch, onMounted,h} from "vue";
 import {gptConfigStore, homeStore,useChatStore} from '@/store'
@@ -194,6 +194,13 @@ const serverSuccess=(s:any)=>{
 </section>
 <div class="mb-4 text-[12px] text-gray-300 dark:text-gray-300/20">{{ $t('mjchat.historyTCntInfo') }}  </div>
 
+<!--禁用stream-->
+<section  class=" flex justify-between items-center" >
+     <div> {{ $t('禁用stream') }}</div>
+     <div><n-switch v-model:value="nGptStore.forbidden_stream" size="small" /></div>
+</section>
+<div class="mb-4 text-[12px] text-gray-300 dark:text-gray-300/20">{{ $t('当禁用stream时,则使用非流式数据') }}  </div>
+
  <section class="mb-4"  >
     <div>{{ $t('mjchat.role') }}</div>
     <div>
@@ -245,6 +252,8 @@ const serverSuccess=(s:any)=>{
         <div >{{ $t('mj.tts_voice') }}</div>
         <n-select v-model:value="nGptStore.tts_voice" :options="voiceList" size="small"  class="!w-[50%]"   />
     </section>
+
+    
 
 
 </template>

@@ -564,6 +564,8 @@ export default {
     use: "Use"
   }
   ,'录音':'Record'
+  ,'禁用stream':'Forbidden Stream'
+   ,'当禁用stream时,则使用非流式数据':'When streaming is disabled, non-streaming data is used.'
 
 
 

@@ -421,6 +421,7 @@ export const subModel= async (opt: subModelType)=>{
     let temperature= 0.5;
     let top_p= 1;
     let presence_penalty= 0 , frequency_penalty=0;
+    let forbidden_stream= false
     if(opt.uuid){
         const chatSet= new chatSetting( +opt.uuid);
         const gStore= chatSet.getGptConfig();
@@ -429,6 +430,7 @@ export const subModel= async (opt: subModelType)=>{
         presence_penalty = gStore.presence_penalty??presence_penalty;
         frequency_penalty = gStore.frequency_penalty??frequency_penalty;
         max_tokens= gStore.max_tokens;
+        forbidden_stream= gStore.forbidden_stream?gStore.forbidden_stream:false
     }
     if(model=='gpt-4-vision-preview' && max_tokens>2048) max_tokens=2048;
 
@@ -444,14 +446,14 @@ export const subModel= async (opt: subModelType)=>{
            top_p,
            presence_penalty ,frequency_penalty,
             "messages": opt.message
-           ,stream:true
+           ,stream:!forbidden_stream
         }
     if(isClaudeModel(model)){
         body ={
             max_completion_tokens:max_tokens ,
             model , 
             "messages": opt.message
-           ,stream:true
+           ,stream:!forbidden_stream
         }
     }else if(isNewModel(model)){
         body ={
@@ -461,7 +463,8 @@ export const subModel= async (opt: subModelType)=>{
             //top_p,
            // presence_penalty ,frequency_penalty,
             "messages": opt.message
-           ,stream:false
+           //,stream:false
+           ,stream:!forbidden_stream
         }
     }
     if(body.stream){ 
